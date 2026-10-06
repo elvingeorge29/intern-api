@@ -53,3 +53,12 @@ def update_book(book_id: int, updated_book: BookIn):
             return book
             
     raise HTTPException(status_code=404, detail="Book not found")
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int):
+    for index, book in enumerate(books):
+        if book["id"] == book_id:
+            deleted_book = books.pop(index)
+            return deleted_book
+            
+    raise HTTPException(status_code=404, detail="Book not found")
