@@ -1,3 +1,4 @@
+#Blueprint that defines the Book Class 
 from sqlalchemy import Column, Integer, String
 from database import Base
 

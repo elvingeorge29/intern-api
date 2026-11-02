@@ -1,3 +1,4 @@
+#Connection to Psotgres using SQLAlchemy, setting up engine, session, and get_db()
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 from config import DATABASE_URL 

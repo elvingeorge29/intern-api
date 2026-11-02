@@ -1,3 +1,4 @@
+#Backup file containing Psycopg2 work
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -16,7 +17,7 @@ POSTGRES_LOGIN = {
 def read_root():
     return {"message": "Hello World"}
 
-@app.get("/books")
+@app.get("/books/")
 def get_all_books():
     conn = psycopg2.connect(**POSTGRES_LOGIN)                       #Connection to Postgres
     with conn.cursor() as cur:                                      #Control the database Directory 

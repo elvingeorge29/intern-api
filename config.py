@@ -1,3 +1,4 @@
+#Loads the .env file and makes the variables availible to the rest of the app, while also being a safety check 
 import os                   
 from dotenv import load_dotenv
 
