@@ -1,3 +1,4 @@
+#Shared Room for all the tests to run
 import os
 import pytest
 from fastapi.testclient import TestClient
@@ -29,6 +30,7 @@ def setup_database():
 def clean_db():                                                 #The name/label for this database
     with test_engine.connect() as conn:                         #Before every single test, empty the table
         conn.execute(Base.metadata.tables["books"].delete())    #Run SQL Delete for books table so next test starts with a blank slate
+        conn.commit()
     yield
 
 @pytest.fixture
@@ -46,3 +48,17 @@ def client():                       #Name of this setup is Client
         yield c                     #Hand the fake browser to the test
     
     app.dependency_overrides.clear()    #Clear the overrides after the test
+
+@pytest.fixture                                     #Fixture = reusable setup tool
+def api_key_headers():                              #Defines the fixture 
+    return {"X-API-Key": "test_api_key_123"}        #Returns the headers needed to pass the API Key Check
+
+
+@pytest.fixture                                                 #Fixture = reusable setup tool 
+def created_book(client, api_key_headers):                      #Defines the new fixture while also referencing previous fixtures (client, api_headers)
+    response = client.post(                                     #Uses the fake test client to send a POST Request to API 
+        "/books",                                               #URL path for the end point
+        json = {"title": "Test Book", "author": "Test Author"}, #Body section for the POST endpoint, data to save 
+        headers = api_key_headers                               #Passes in the dictionary from the first fixture
+    )
+    return response.json()                                      #Returns the server's JSON response
