@@ -1,5 +1,6 @@
 #Tells Git which files and folders need to be ignored; like a bouncer
 venv/
 __pycache__/
+.pytest_cache/
 .env
 notes.txt

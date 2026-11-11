@@ -146,3 +146,29 @@ def test_missing_or_wrong_key(client, created_book, method):    #Test: Try to us
 def test_bad_body_without_key_returns_401(client):  #Send bad data without an API Key
     response = client.post("/books", json={})       #Send POST Request with empty body and no API Key
     assert response.status_code == 401              #Check that server sends a 401 error
+
+def test_create_book_trims_whitespace(client, api_key_headers):
+    #Send a book with spaces around the words
+    response = client.post(
+        "/books",
+        json={"title": "  Dune  ", "author": "  Frank Herbert  "},
+        headers=api_key_headers
+    )
+    assert response.status_code == 201
+    data = response.json()
+    #Check that the spaces were removed before saving
+    assert data["title"] == "Dune"
+    assert data["author"] == "Frank Herbert"
+
+@pytest.mark.parametrize("bad_payload", [
+    pytest.param({"title": "   ", "author": "Author"}, id="whitespace-title"),
+    pytest.param({"title": "Title", "author": "   "}, id="whitespace-author"),
+])
+def test_update_book_bad_data(client, created_book, api_key_headers, bad_payload):
+    book_id = created_book["id"]
+    response = client.put(f"/books/{book_id}", json=bad_payload, headers=api_key_headers)
+    assert response.status_code == 422
+    
+    #Ensure the book didn't change
+    get_response = client.get(f"/books/{book_id}")
+    assert get_response.json()["title"] == "Test Book"

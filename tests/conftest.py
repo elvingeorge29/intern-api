@@ -20,8 +20,8 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
-    Base.metadata.drop_all(bind=test_engine)    #Create the tables in the test database
-    Base.metadata.create_all(bind=test_engine)  
+    Base.metadata.drop_all(bind=test_engine)    #Create the tables in the test DB
+    Base.metadata.create_all(bind=test_engine)  #Recreates the empty books table in the DB; clean empty table for use
     yield
     Base.metadata.drop_all(bind=test_engine)    #Drop tables after all tests are done (optional cleanup)
 
@@ -30,7 +30,7 @@ def setup_database():
 def clean_db():                                                 #The name/label for this database
     with test_engine.connect() as conn:                         #Before every single test, empty the table
         conn.execute(Base.metadata.tables["books"].delete())    #Run SQL Delete for books table so next test starts with a blank slate
-        conn.commit()
+        conn.commit()                                           #Commit the transaction so the deletion isn't rolled back
     yield
 
 @pytest.fixture
