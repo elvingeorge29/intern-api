@@ -169,6 +169,5 @@ def test_update_book_bad_data(client, created_book, api_key_headers, bad_payload
     response = client.put(f"/books/{book_id}", json=bad_payload, headers=api_key_headers)
     assert response.status_code == 422
     
-    #Ensure the book didn't change
     get_response = client.get(f"/books/{book_id}")
-    assert get_response.json()["title"] == "Test Book"
+    assert get_response.json()["title"] == "Test Book"      #Ensure the book didn't change
